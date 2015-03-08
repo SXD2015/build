@@ -939,11 +939,11 @@ INTERNAL_SYSTEMIMAGE_FILES := $(filter $(TARGET_OUT)/%, \
     $(PDK_FUSION_SYSIMG_FILES) \
     $(RECOVERY_RESOURCE_ZIP))
 
-systemimage-squisher: $(INTERNAL_SYSTEMIMAGE_FILES)
-	@echo -e "Optimizing PNGs to Shrink ROM Size!"
-	$(hide) APKCERTS=$(APKCERTS_FILE) ./vendor/pa/utils/squisher
+#systemimage-squisher: $(INTERNAL_SYSTEMIMAGE_FILES)
+#	@echo -e "Optimizing PNGs to Shrink ROM Size!"
+#	$(hide) APKCERTS=$(APKCERTS_FILE) ./vendor/pa/utils/squisher
 
-.PHONY: systemimage-squisher
+#.PHONY: systemimage-squisher
 
 FULL_SYSTEMIMAGE_DEPS := $(INTERNAL_SYSTEMIMAGE_FILES) $(INTERNAL_USERIMAGES_DEPS) systemimage-squisher
 # -----------------------------------------------------------------
@@ -1519,7 +1519,7 @@ $(INTERNAL_OTA_PACKAGE_TARGET): $(BUILT_TARGET_FILES_PACKAGE) $(DISTTOOLS)
 	   $(if $(OEM_OTA_CONFIG), -o $(OEM_OTA_CONFIG)) \
 	   $(BUILT_TARGET_FILES_PACKAGE) $@
 
-PA_TARGET_PACKAGE := $(PRODUCT_OUT)/$(TARGET_PRODUCT)-$(ROM_VERSION).zip
+AOSP_TARGET_PACKAGE := $(PRODUCT_OUT)/$(TARGET_PRODUCT)-$(ROM_VERSION).zip
 
 .PHONY: otapackage bacon
 otapackage: $(INTERNAL_OTA_PACKAGE_TARGET)
@@ -1528,12 +1528,12 @@ ifneq ($(TARGET_CUSTOM_RELEASETOOL),)
 	$(hide) \
 	$(TARGET_CUSTOM_RELEASETOOL)
 endif
-ifneq ($(INTERNAL_OTA_PACKAGE_TARGET),$(PA_TARGET_PACKAGE))
-	$(hide) ln -f $(INTERNAL_OTA_PACKAGE_TARGET) $(PA_TARGET_PACKAGE)
+ifneq ($(INTERNAL_OTA_PACKAGE_TARGET),$(AOSP_TARGET_PACKAGE))
+	$(hide) ln -f $(INTERNAL_OTA_PACKAGE_TARGET) $(AOSP_TARGET_PACKAGE)
 endif
-	$(hide) $(MD5SUM) $(PA_TARGET_PACKAGE) > $(PA_TARGET_PACKAGE).md5sum
+	$(hide) $(MD5SUM) $(AOSP_TARGET_PACKAGE) > $(AOSP_TARGET_PACKAGE).md5sum
 
-	@echo -e ${CL_CYN}"Package Complete: $(PA_TARGET_PACKAGE)"${CL_RST}
+	@echo -e ${CL_CYN}"Package Complete: $(AOSP_TARGET_PACKAGE)"${CL_RST}
 
 ifeq ($(USE_PREBUILT_CHROMIUM),1)
 ifneq ($(PRODUCT_PREBUILT_WEBVIEWCHROMIUM),yes)
